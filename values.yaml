@@ -1,0 +1,18 @@
+app_name: ctfd
+image: 'ctfd/ctfd'
+app_replicas: 1
+
+resources:
+  limits:
+    memory: "128Mi"
+    logsMemory: "128Mi"
+    uploadsMemory: "128Mi"
+    cpu: "500m"
+
+ports:
+  containerPort: 8000
+  port: 8000
+
+ingress:
+  name: ctfd-ingress
+  class: nginx

@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    ctfd: ctf-pv
+    app: ctf-pv-logs
+  name: ctf-pv-logs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.resources.limits.logsMemory }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    ctfd: ctf-pv-pv
+    app: ctf-pv-uploads
+  name: ctf-pv-uploads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.resources.limits.uploadsMemory }}
+      
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app_name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:    
+      app: {{ .Values.app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app_name }}
+    spec:
+      securityContext:
+        fsGroup: 2000
+      volumes:
+      - name: ctf-pv-logs
+        persistentVolumeClaim:
+          claimName: ctf-pv-logs
+      - name: ctf-pv-uploads
+        persistentVolumeClaim:
+          claimName: ctf-pv-uploads
+      containers:
+      - name: {{ .Values.app_name }}
+        image: {{ .Values.image }}
+        ports:
+        - containerPort: {{ .Values.ports.containerPort }}
+        resources:
+          limits:
+            memory: {{ .Values.resources.limits.memory }}
+            cpu: {{ .Values.resources.limits.cpu }}
+        volumeMounts:
+        - mountPath: /var/log/CTFd
+          name: ctf-pv-logs
+        - mountPath: /var/uploads
+          name: ctf-pv-uploads
