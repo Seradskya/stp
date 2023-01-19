@@ -19,4 +19,5 @@ ingress:
 
 secrets:
   secret: default-secret
+  name: secret
   key: secret
