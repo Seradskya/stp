@@ -59,7 +59,7 @@ spec:
         env:
           - name: SECRET
             valueFrom:
-              secretKeyRef:
+             secretKeyRef:
                 name: {{ .Values.secrets.name }}
                 key: {{ .Values.secrets.key }}
         ports:
