@@ -56,6 +56,12 @@ spec:
       containers:
       - name: {{ .Values.app_name }}
         image: {{ .Values.image }}
+        env:
+          - name: SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secrets.defaultName }}
+                key: secret
         ports:
         - containerPort: {{ .Values.ports.containerPort }}
         resources:
