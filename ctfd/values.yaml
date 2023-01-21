@@ -16,8 +16,3 @@ ports:
 ingress:
   name: ctfd-ingress
   class: nginx
-
-secrets:
-  secret: default-secret
-  name: ctf-pv-secret
-  key: secret
